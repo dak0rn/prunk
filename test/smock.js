@@ -82,3 +82,45 @@ describe('mock()', function() {
     });
 
 });
+
+describe('unmock()', function() {
+
+    beforeEach(function() {
+        // Reset the require cache
+        require.cache = {};
+        smock = require('..');
+    });
+
+    it('should take one argument', function() {
+        expect(smock.unmock.length).to.equal(1);
+    });
+
+    it('should unmock correctly when using a string', function() {
+        smock.mock('unmockblah', 77);
+        smock.unmock('unmockblah');
+
+        var fn = require.bind(this, 'unmockblah');
+        expect( fn ).to.throw();
+    });
+
+    it('should unmock correctly when unsing a regex', function() {
+        smock.mock(/^regexblah/, 81);
+        smock.unmock(/^regexblah/);
+
+        ['regexblah', 'regexblah1', 'regexblah2', 'regexblahblah'].forEach(function(str) {
+            var fn = require.bind(this, str);
+
+        });
+    });
+
+    it('should correctly mock using callbacks', function() {
+        var filter = function(str) { return 0 === str.indexOf('blub'); };
+        smock.mock(filter, 42);
+        smock.unmock( filter );
+
+        ['blub', 'blub1', 'blub2', 'blubblah'].forEach(function(str) {
+            var fn = require.bind(this, str);
+            expect( fn ).to.throw();
+        });
+    });
+});
