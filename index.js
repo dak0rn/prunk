@@ -83,7 +83,9 @@ module.exports = {
 
     unsuppress: function() {},
 
-    unmockAll: function() {},
+    unmockAll: function() {
+        cache = [];
+    },
 
     unsuppressAll: function() {}
 
