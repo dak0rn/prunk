@@ -1,0 +1,32 @@
+{
+  "name": "smock",
+  "version": "1.0.0",
+  "description": "A mocking utility for node.js require",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dak0rn/smock.git"
+  },
+  "keywords": [
+    "node",
+    "mock",
+    "mocking",
+    "require",
+    "test",
+    "tests",
+    "coverage"
+  ],
+  "author": "Daniel Koch <daniel@suitsoft.eu>",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/dak0rn/smock/issues"
+  },
+  "homepage": "https://github.com/dak0rn/smock#readme",
+  "devDependencies": {
+    "chai": "^3.4.1",
+    "mocha": "^2.3.4"
+  }
+}
