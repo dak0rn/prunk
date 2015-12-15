@@ -83,6 +83,8 @@ describe('mock()', function() {
 
 });
 
+
+// unmock function
 describe('unmock()', function() {
 
     beforeEach(function() {
@@ -109,7 +111,7 @@ describe('unmock()', function() {
 
         ['regexblah', 'regexblah1', 'regexblah2', 'regexblahblah'].forEach(function(str) {
             var fn = require.bind(this, str);
-
+            expect( fn ).to.throw();
         });
     });
 
@@ -117,6 +119,49 @@ describe('unmock()', function() {
         var filter = function(str) { return 0 === str.indexOf('blub'); };
         smock.mock(filter, 42);
         smock.unmock( filter );
+
+        ['blub', 'blub1', 'blub2', 'blubblah'].forEach(function(str) {
+            var fn = require.bind(this, str);
+            expect( fn ).to.throw();
+        });
+    });
+});
+
+// unmockAll function
+describe('unmockAll()', function() {
+
+    beforeEach(function() {
+        // Reset the require cache
+        require.cache = {};
+        smock = require('..');
+    });
+
+    it('should take no arguments', function() {
+        expect(smock.unmockAll.length).to.equal(0);
+    });
+
+    it('should unmock all correctly when using a string', function() {
+        smock.mock('unmockallblah', '_s3');
+        smock.unmockAll();
+
+        var fn = require.bind(this, 'unmockallblah');
+        expect( fn ).to.throw();
+    });
+
+    it('should unmock all correctly when unsing a regex', function() {
+        smock.mock(/^foobar/, 13);
+        smock.unmockAll();
+
+        ['foobar', 'foobar1', 'foobar2', 'foobarblah'].forEach(function(str) {
+            var fn = require.bind(this, str);
+            expect(fn).to.throw();
+        });
+    });
+
+    it('should correctly mock using callbacks', function() {
+        var filter = function(str) { return 0 === str.indexOf('blub'); };
+        smock.mock(filter, 42);
+        smock.unmockAll();
 
         ['blub', 'blub1', 'blub2', 'blubblah'].forEach(function(str) {
             var fn = require.bind(this, str);
