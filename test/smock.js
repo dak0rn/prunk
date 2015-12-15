@@ -3,10 +3,14 @@
  *
  */
 var expect = require('chai').expect;
-var smock = require('..');
+var smock;
 
 // Export
 describe('Export', function() {
+
+    before(function() {
+        smock = require('..');
+    });
 
     it('should be an object', function() {
         expect( smock ).to.be.an('object');
@@ -44,6 +48,7 @@ describe('mock()', function() {
     beforeEach(function() {
         // Reset the require cache
         require.cache = {};
+        smock = require('..');
     });
 
     it('should take two arguments', function() {
