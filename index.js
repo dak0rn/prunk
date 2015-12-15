@@ -68,7 +68,18 @@ module.exports = {
 
     suppress: function() {},
 
-    unmock: function() {},
+    unmock: function(test) {
+        if( test instanceof RegExp )
+            test = ('' + test);
+
+        cache = cache.filter( function(def) {
+                // If we have a regex we make a string
+                // to compare
+                var cmp = (def.test instanceof RegExp) ? '' + def.test : def.test;
+
+                return test !== cmp;
+            });
+    },
 
     unsuppress: function() {},
 
