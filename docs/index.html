@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>smock</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+  <link rel="stylesheet" media="all" href="docco.css" />
+</head>
+<body>
+  <div id="container">
+    <div id="background"></div>
+    
+    <ul class="sections">
+        
+        
+        
+        <li id="section-1">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-1">&#182;</a>
+              </div>
+              <h1 id="smock">smock</h1>
+<h2 id="a-mocking-utility-for-node-js-require">A mocking utility for node.js require</h2>
+<pre><code>Author: Daniel Koch &lt;daniel@suitsoft.eu&gt;
+Version: <span class="hljs-number">1.0</span><span class="hljs-number">.0</span>
+</code></pre>
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-2">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-2">&#182;</a>
+              </div>
+              <p>Require node’s <code>module</code> module that provides
+access to all the things <code>require()</code> uses</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-keyword">var</span> Module = <span class="hljs-built_in">require</span>(<span class="hljs-string">'module'</span>);</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-3">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-3">&#182;</a>
+              </div>
+              <h2 id="_load">_load</h2>
+<p>The original <code>module._load</code> function</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-keyword">var</span> _load = <span class="hljs-keyword">void</span> <span class="hljs-number">0</span>;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-4">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-4">&#182;</a>
+              </div>
+              <h2 id="cache">cache</h2>
+<p>The cache that contains mocks and suppressed imports</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-keyword">var</span> cache = [];</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-5">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-5">&#182;</a>
+              </div>
+              <h2 id="init">init</h2>
+<p>Overwrites <code>Module._load</code> with a function that either
+returns a mocked value from the cache or whatever the original
+function returns if nothing has been mocked.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-keyword">var</span> init = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+    _load = Module._load;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-6">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-6">&#182;</a>
+              </div>
+              <p>Overwrite the original <code>_load</code> function
+The important argument for us is <code>req</code> because its the
+name of whatever was required.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    Module._load = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">req, parent, isMain</span>) </span>{</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-7">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-7">&#182;</a>
+              </div>
+              <p>Take the cache…</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        <span class="hljs-keyword">var</span> mock = cache</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-8">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-8">&#182;</a>
+              </div>
+              <p>Find the tests that match …</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>                        .filter(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">mockDef</span>) </span>{
+                            <span class="hljs-keyword">var</span> test = mockDef.test;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-9">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-9">&#182;</a>
+              </div>
+              <p>If we have a regex we match it against the string</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>                            <span class="hljs-keyword">if</span>( test <span class="hljs-keyword">instanceof</span> <span class="hljs-built_in">RegExp</span> )
+                                <span class="hljs-keyword">return</span> <span class="hljs-literal">null</span> !== req.match( test );</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-10">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-10">&#182;</a>
+              </div>
+              <p>If we have a function we let the
+function decide</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>                            <span class="hljs-keyword">if</span>( <span class="hljs-string">'function'</span> === <span class="hljs-keyword">typeof</span> test )
+                                <span class="hljs-keyword">return</span> !! test(req, parent, isMain);</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-11">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-11">&#182;</a>
+              </div>
+              <p>Last case: we simply have no idea
+Thus, we use a strict equal</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>                            <span class="hljs-keyword">return</span> test === req;
+                        })</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-12">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-12">&#182;</a>
+              </div>
+              <p>… and grab the mocked value from it</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>                        .map( <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">mockDef</span>) </span>{
+                            <span class="hljs-keyword">return</span> mockDef.value;
+                        });</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-13">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-13">&#182;</a>
+              </div>
+              <p>If we found a mocked import we return it.
+We only use the first mock we find. Since the <code>createMock()</code> function
+uses <code>Array.prototype.unshift</code> we always use the mock added at last.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        <span class="hljs-keyword">if</span>( mock.length )
+            <span class="hljs-keyword">return</span> mock[<span class="hljs-number">0</span>];</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-14">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-14">&#182;</a>
+              </div>
+              <p>No mock; let the load system do its work</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        <span class="hljs-keyword">return</span> _load.apply(Module, <span class="hljs-built_in">arguments</span>);
+    };
+};</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-15">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-15">&#182;</a>
+              </div>
+              <h2 id="createmock">createMock</h2>
+<p>Creates a mock with the given test, mocking with the given
+value and use the given type.</p>
+<ul>
+<li><code>test</code>  - Something that is used to compare. Might be a string, a function or something else</li>
+<li><code>value</code> - The mock value that replaces the original import</li>
+<li><code>type</code>  - Type, either <code>&#39;mock&#39;</code> or <code>&#39;sup&#39;</code>. This is used to remove it later on.</li>
+</ul>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-keyword">var</span> createMock = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">test, value, type</span>) </span>{</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-16">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-16">&#182;</a>
+              </div>
+              <p>Initialize the cache if not done already</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">if</span>( ! _load )
+        init.call(<span class="hljs-keyword">this</span>);</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-17">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-17">&#182;</a>
+              </div>
+              <p>Push the new item to the front</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    cache.unshift({
+        test: test,
+        value: value,
+        _type: type
+    })
+};</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-18">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-18">&#182;</a>
+              </div>
+              <h2 id="remove">remove</h2>
+<p>Removes a mock definition from the collection.</p>
+<ul>
+<li><code>test</code>  - Something that is used to compare. Might be a string, a function or something else</li>
+<li><code>type</code>  - Type, either <code>&#39;mock&#39;</code> or <code>&#39;sup&#39;</code>.</li>
+</ul>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-keyword">var</span> remove = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">test, type</span>) </span>{</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-19">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-19">&#182;</a>
+              </div>
+              <p>We want to use strict equals below thus
+we use the string representation of RegExp’s</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">if</span>( test <span class="hljs-keyword">instanceof</span> <span class="hljs-built_in">RegExp</span> )
+            test = (<span class="hljs-string">''</span> + test);
+
+    cache = cache.filter( <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">def</span>) </span>{</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-20">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-20">&#182;</a>
+              </div>
+              <p>If the type does not match we ignore it</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>            <span class="hljs-keyword">if</span>( type !== def._type )
+                <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-21">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-21">&#182;</a>
+              </div>
+              <p>Again, convert RegExp’s if found</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>            <span class="hljs-keyword">var</span> cmp = (def.test <span class="hljs-keyword">instanceof</span> <span class="hljs-built_in">RegExp</span>) ? <span class="hljs-string">''</span> + def.test : def.test;
+
+            <span class="hljs-keyword">return</span> test !== cmp;
+        });
+};</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-22">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-22">&#182;</a>
+              </div>
+              <h2 id="removeall">removeAll</h2>
+<p>Removes all mocks of the given type</p>
+<ul>
+<li><code>type</code>  - Type, either <code>&#39;mock&#39;</code> or <code>&#39;sup&#39;</code>.</li>
+</ul>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-keyword">var</span> removeAll = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">type</span>) </span>{
+    cache = cache.filter( <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">item</span>) </span>{
+        <span class="hljs-keyword">return</span> item._type !== type;
+    });
+};</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-23">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-23">&#182;</a>
+              </div>
+              <h2 id="exports">Exports</h2>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-built_in">module</span>.exports = {</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-24">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-24">&#182;</a>
+              </div>
+              <p>Provide access to the cache.
+This is done to make the testing more reliable.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    get _cache() {
+        <span class="hljs-keyword">return</span> cache;
+    },
+
+    set _cache(what) {
+        cache = what;
+    },</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-25">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-25">&#182;</a>
+              </div>
+              <h3 id="mock">mock</h3>
+<p>Mocks the given import with the given value.
+<code>test</code> can be a <strong>function</strong> that is used to compare
+whatever is required and returns <code>true</code> or <code>false</code>.
+If the return value is truthy the import will be
+mocked with the given value.</p>
+<p>The function’s arguments are the same as with <code>Module._load</code>.
+Most of the time you will look at the first argument, a <code>string</code>.</p>
+<pre><code><span class="hljs-keyword">var</span> mockStyles = (req) =&gt; <span class="hljs-string">'style.css'</span> === req;
+smock.mock( mockStyles, <span class="hljs-string">'no css, dude.'</span>);
+</code></pre><p><code>test</code> can also be a <code>RegExp</code> that is matched agains the name
+of the import or a string. It can be anything else, too, if your
+imports are gone totally crazy.</p>
+<pre><code>smock.mock( <span class="hljs-string">'style.css'</span>, <span class="hljs-string">'no css, dude.'</span> );
+
+smock.mock( <span class="hljs-regexp">/\.(css|scss|sass|less)/</span>, <span class="hljs-string">'no styles, dude.'</span>);
+</code></pre>
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    mock: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">test, value</span>) </span>{
+        createMock(test, value, <span class="hljs-string">'mock'</span>);
+    },</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-26">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-26">&#182;</a>
+              </div>
+              <h3 id="suppress">suppress</h3>
+<p>Suppresses the given import. A suppressed import always
+returns <code>undefined</code>.
+The <code>test</code> argument is the same as used by <a href="#section-25">mock()</a>.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    suppress: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">test</span>) </span>{
+        createMock(test, <span class="hljs-keyword">void</span> <span class="hljs-number">0</span>, <span class="hljs-string">'sup'</span>);
+    },</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-27">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-27">&#182;</a>
+              </div>
+              <h3 id="unmock">unmock</h3>
+<p>Removes the mock registered for the given <code>test</code>.
+<code>unmock()</code> uses strict equal to compare the registered
+mocks.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    unmock: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">test</span>) </span>{
+        remove(test, <span class="hljs-string">'mock'</span>);
+    },</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-28">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-28">&#182;</a>
+              </div>
+              <h3 id="unsuppress">unsuppress</h3>
+<p>Removes the mock registered for the given <code>test</code>.
+<code>unsuppress()</code> uses strict equal to compare the suppressed
+imports.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    unsuppress: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">test</span>) </span>{
+        remove(test, <span class="hljs-string">'sup'</span>);
+    },</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-29">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-29">&#182;</a>
+              </div>
+              <h3 id="unmockall">unmockAll</h3>
+<p>Removes all mocks for imports</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    unmockAll: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+        removeAll(<span class="hljs-string">'mock'</span>);
+    },</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-30">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-30">&#182;</a>
+              </div>
+              <h3 id="unsuppressall">unsuppressAll</h3>
+<p>Removes all suppressed imports</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    unsuppressAll: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+        removeAll(<span class="hljs-string">'sup'</span>);
+    }
+
+};</pre></div></div>
+            
+        </li>
+        
+    </ul>
+  </div>
+</body>
+</html>
