@@ -120,4 +120,4 @@ Removes all suppressed imports
 
 ## Documentation
 
-[Documented source](https://dak0rn.github.io/smock/docs).
+[Documented source](https://dak0rn.github.io/smock/).
