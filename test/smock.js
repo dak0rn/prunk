@@ -125,6 +125,13 @@ describe('unmock()', function() {
             expect( fn ).to.throw();
         });
     });
+
+    it('should keep the suppressed things', function() {
+        smock.suppress('supmepls');
+        smock.unmock('supmepls');
+
+        expect( require('supmepls') ).to.be.undefined;
+    });
 });
 
 // unmockAll function
@@ -166,6 +173,18 @@ describe('unmockAll()', function() {
         ['blub', 'blub1', 'blub2', 'blubblah'].forEach(function(str) {
             var fn = require.bind(this, str);
             expect( fn ).to.throw();
+        });
+    });
+
+    it('should keep all suppressed things', function() {
+        smock.suppress('supAll1');
+        smock.suppress('supAll2');
+        smock.suppress('supAll3');
+
+        smock.unmockAll();
+
+        ['supAll3', 'supAll2', 'supAll1'].forEach( function(what) {
+            expect( require(what) ).to.be.undefined;
         });
     });
 });
@@ -255,6 +274,13 @@ describe('unsuppress()', function() {
             expect( fn ).to.throw();
         });
     });
+
+    it('should keep the mocked stuff', function() {
+        smock.mock('keepmepls', 0.4);
+        smock.unsuppress('keepmepls');
+
+        expect( require('keepmepls') ).to.equal(0.4);
+    });
 });
 
 // unsuppressAll function
@@ -296,6 +322,18 @@ describe('unsuppressAll()', function() {
         ['impAll', 'impAll1', 'impAll2', 'impAllblah'].forEach(function(str) {
             var fn = require.bind(this, str);
             expect( fn ).to.throw();
+        });
+    });
+
+    it('should keep all mocked things', function() {
+        smock.mock('mockAll1', '$$mocked');
+        smock.mock('mockAll2', '$$mocked');
+        smock.mock('mockAll3', '$$mocked');
+
+        smock.unmockAll();
+
+        ['mockAll3', 'mockAll2', 'mockAll1'].forEach( function(what) {
+            expect( require(what) ).to.equal('$$mocked');
         });
     });
 });
