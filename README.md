@@ -4,6 +4,10 @@ smock is a mocking utility for node.js `require()`. It allows you to
 mock or suppress imports based on their name, regular expressions or
 custom test functions.
 
+[![Build Status](https://travis-ci.org/dak0rn/smock.svg?branch=master)](https://travis-ci.org/dak0rn/smock)
+![Dependencies](https://img.shields.io/david/dak0rn/smock.svg)
+![Dev Dependencies](https://img.shields.io/david/dev/dak0rn/smock.svg)
+
 ## Example
 
 Given you have a React component you want to test. However, since
