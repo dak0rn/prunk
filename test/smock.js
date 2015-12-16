@@ -71,7 +71,7 @@ describe('mock()', function() {
         });
     });
 
-    it('should correctly mock using callbacks', function() {
+    it('should mock correctly using callbacks', function() {
         var filter = function(str) { return 0 === str.indexOf('blah'); };
         smock.mock(filter, 42);
 
@@ -115,7 +115,7 @@ describe('unmock()', function() {
         });
     });
 
-    it('should correctly mock using callbacks', function() {
+    it('should unmock correctly using callbacks', function() {
         var filter = function(str) { return 0 === str.indexOf('blub'); };
         smock.mock(filter, 42);
         smock.unmock( filter );
@@ -158,7 +158,7 @@ describe('unmockAll()', function() {
         });
     });
 
-    it('should correctly mock using callbacks', function() {
+    it('should unmock correctly using callbacks', function() {
         var filter = function(str) { return 0 === str.indexOf('blub'); };
         smock.mock(filter, 42);
         smock.unmockAll();
@@ -202,7 +202,7 @@ describe('suppress()', function() {
         });
     });
 
-    it('should correctly mock using callbacks', function() {
+    it('should suppress correctly using callbacks', function() {
         var filter = function(str) { return 0 === str.indexOf('blub'); };
         smock.suppress( filter );
 
@@ -245,7 +245,7 @@ describe('unsuppress()', function() {
         });
     });
 
-    it('should unsuppress correctly mock using callbacks', function() {
+    it('should unsuppress correctly using callbacks', function() {
         var filter = function(str) { return 0 === str.indexOf('blub'); };
         smock.suppress(filter);
         smock.unsuppress( filter );
