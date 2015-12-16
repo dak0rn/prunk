@@ -1,5 +1,5 @@
 {
-  "name": "smock",
+  "name": "prunk",
   "version": "1.0.0",
   "description": "A mocking utility for node.js require",
   "main": "index.js",
@@ -9,7 +9,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/dak0rn/smock.git"
+    "url": "git+https://github.com/dak0rn/prunk.git"
   },
   "keywords": [
     "node",
@@ -23,9 +23,9 @@
   "author": "Daniel Koch <daniel@suitsoft.eu>",
   "license": "Apache-2.0",
   "bugs": {
-    "url": "https://github.com/dak0rn/smock/issues"
+    "url": "https://github.com/dak0rn/prunk/issues"
   },
-  "homepage": "https://github.com/dak0rn/smock#readme",
+  "homepage": "https://github.com/dak0rn/prunk#readme",
   "devDependencies": {
     "chai": "^3.4.1",
     "docco": "^0.7.0",

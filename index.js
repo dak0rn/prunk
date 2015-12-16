@@ -1,5 +1,5 @@
 //
-// # smock
+// # prunk
 // ## A mocking utility for node.js require
 //
 //     Author: Daniel Koch <daniel@suitsoft.eu>
@@ -145,14 +145,14 @@ module.exports = {
     // Most of the time you will look at the first argument, a `string`.
     //
     //     var mockStyles = (req) => 'style.css' === req;
-    //     smock.mock( mockStyles, 'no css, dude.');
+    //     prunk.mock( mockStyles, 'no css, dude.');
     //
     // `test` can also be a `RegExp` that is matched agains the name
     // of the import or a string. It can be anything else, too, if your
     // imports are gone totally crazy.
     //
-    //     smock.mock( 'style.css', 'no css, dude.' );
-    //     smock.mock( /\.(css|scss|sass|less)/, 'no styles, dude.');
+    //     prunk.mock( 'style.css', 'no css, dude.' );
+    //     prunk.mock( /\.(css|scss|sass|less)/, 'no styles, dude.');
     //
     mock: function(test, value) {
         createMock(test, value, 'mock');
