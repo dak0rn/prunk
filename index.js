@@ -152,7 +152,6 @@ module.exports = {
     // imports are gone totally crazy.
     //
     //     smock.mock( 'style.css', 'no css, dude.' );
-    //
     //     smock.mock( /\.(css|scss|sass|less)/, 'no styles, dude.');
     //
     mock: function(test, value) {
