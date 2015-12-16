@@ -169,3 +169,46 @@ describe('unmockAll()', function() {
         });
     });
 });
+
+// suppress() function
+describe('suppress()', function() {
+
+    beforeEach(function() {
+        // Reset the require cache
+        require.cache = {};
+        smock = require('..');
+
+        // Make sure, the internal cache is empty
+        smock.unmockAll();
+    });
+
+    it('should take one argument', function() {
+        expect(smock.suppress.length).to.equal(1);
+    });
+
+    it('should suppress correctly when using a string', function() {
+        smock.suppress('suppressblah');
+
+        var imp = require('suppressblah');
+        expect( imp ).to.be.undefined;
+    });
+
+    it('should suppress correctly when unsing a regex', function() {
+        smock.suppress(/^regexblah/);
+
+        ['regexblah', 'regexblah1', 'regexblah2', 'regexblahblah'].forEach(function(str) {
+            var imp = require(str);
+            expect(imp).to.be.undefined;
+        });
+    });
+
+    it('should correctly mock using callbacks', function() {
+        var filter = function(str) { return 0 === str.indexOf('blub'); };
+        smock.suppress( filter );
+
+        ['blub', 'blub1', 'blub2', 'blubblah'].forEach(function(str) {
+            var imp = require(str);
+            expect(imp).to.be.undefined;
+        });
+    });
+});
