@@ -212,3 +212,47 @@ describe('suppress()', function() {
         });
     });
 });
+
+// unsuppress function
+describe('unsuppress()', function() {
+
+    beforeEach(function() {
+        // Reset the require cache
+        require.cache = {};
+        smock = require('..');
+        smock.unmockAll();
+    });
+
+    it('should take one argument', function() {
+        expect(smock.unsuppress.length).to.equal(1);
+    });
+
+    it('should unsuppress correctly when using a string', function() {
+        smock.suppress('unmockblah');
+        smock.unsuppress('unmockblah');
+
+        var fn = require.bind(this, 'unmockblah');
+        expect( fn ).to.throw();
+    });
+
+    it('should unsuppress correctly when unsing a regex', function() {
+        smock.suppress(/^regexblah/);
+        smock.unsuppress(/^regexblah/);
+
+        ['regexblah', 'regexblah1', 'regexblah2', 'regexblahblah'].forEach(function(str) {
+            var fn = require.bind(this, str);
+            expect( fn ).to.throw();
+        });
+    });
+
+    it('should unsuppress correctly mock using callbacks', function() {
+        var filter = function(str) { return 0 === str.indexOf('blub'); };
+        smock.suppress(filter);
+        smock.unsuppress( filter );
+
+        ['blub', 'blub1', 'blub2', 'blubblah'].forEach(function(str) {
+            var fn = require.bind(this, str);
+            expect( fn ).to.throw();
+        });
+    });
+});
