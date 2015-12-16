@@ -81,6 +81,13 @@ describe('mock()', function() {
         });
     });
 
+    it('should mock if invoked after suppress', function() {
+        smock.suppress('bash');
+        smock.mock('bash', 'success');
+
+        expect( require('bash') ).to.equal('success');
+    });
+
 });
 
 
@@ -229,6 +236,13 @@ describe('suppress()', function() {
             var imp = require(str);
             expect(imp).to.be.undefined;
         });
+    });
+
+    it('should suppress if invoked after mock', function() {
+        smock.mock('fish', 'failed');
+        smock.suppress('fish');
+
+        expect( require('fish') ).to.be.undefined;
     });
 });
 
