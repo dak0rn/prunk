@@ -91,6 +91,8 @@ module.exports = {
         cache = [];
     },
 
-    unsuppressAll: function() {}
+    unsuppressAll: function() {
+        this.unmockAll();
+    }
 
 };
