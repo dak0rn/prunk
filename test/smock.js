@@ -49,6 +49,7 @@ describe('mock()', function() {
         // Reset the require cache
         require.cache = {};
         smock = require('..');
+        smock._cache = [];
     });
 
     it('should take two arguments', function() {
@@ -98,6 +99,7 @@ describe('unmock()', function() {
         // Reset the require cache
         require.cache = {};
         smock = require('..');
+        smock._cache = [];
     });
 
     it('should take one argument', function() {
@@ -148,6 +150,7 @@ describe('unmockAll()', function() {
         // Reset the require cache
         require.cache = {};
         smock = require('..');
+        smock._cache = [];
     });
 
     it('should take no arguments', function() {
@@ -205,7 +208,7 @@ describe('suppress()', function() {
         smock = require('..');
 
         // Make sure, the internal cache is empty
-        smock.unmockAll();
+        smock._cache = [];
     });
 
     it('should take one argument', function() {
@@ -253,7 +256,7 @@ describe('unsuppress()', function() {
         // Reset the require cache
         require.cache = {};
         smock = require('..');
-        smock.unmockAll();
+        smock._cache = [];
     });
 
     it('should take one argument', function() {
@@ -304,6 +307,7 @@ describe('unsuppressAll()', function() {
         // Reset the require cache
         require.cache = {};
         smock = require('..');
+        smock._cache = [];
     });
 
     it('should take no arguments', function() {
@@ -344,7 +348,7 @@ describe('unsuppressAll()', function() {
         smock.mock('mockAll2', '$$mocked');
         smock.mock('mockAll3', '$$mocked');
 
-        smock.unmockAll();
+        smock.unsuppressAll();
 
         ['mockAll3', 'mockAll2', 'mockAll1'].forEach( function(what) {
             expect( require(what) ).to.equal('$$mocked');

@@ -10,9 +10,6 @@ var Module = require('module');
 // The original module._load function
 var _load = void 0;
 
-// The cache
-var cache = [];
-
 // The function that sets up mocking
 var init = function() {
     _load = Module._load;
@@ -21,7 +18,7 @@ var init = function() {
     // a function that uses the mocking rules
     Module._load = function(req, parent, isMain) {
 
-        var mock = cache
+        var mock = this._cache
                         .filter(function(mockDef) {
                             var test = mockDef.test;
 
@@ -48,51 +45,73 @@ var init = function() {
 
         // No mock; continue as usual
         return _load.apply(Module, arguments);
-    };
+    }.bind(this);
+};
+
+// Creates a mock
+var createMock = function(test, value, type) {
+    // Lazy initiation
+    if( ! _load )
+        init.call(this);
+
+    // The last entry's always right
+    this._cache.unshift({
+        test: test,
+        value: value,
+        _type: type
+    })
+};
+
+// Removes a mock definition from the collection
+var remove = function(test, type) {
+    if( test instanceof RegExp )
+            test = ('' + test);
+
+    this._cache = this._cache.filter( function(def) {
+            if( type !== def._type )
+                return true;
+
+            // If we have a regex we make a string
+            // to compare
+            var cmp = (def.test instanceof RegExp) ? '' + def.test : def.test;
+
+            return test !== cmp;
+        });
+};
+
+var removeAll = function(type) {
+    this._cache = this._cache.filter( function(item) {
+        return item._type !== type;
+    });
 };
 
 // Export
 module.exports = {
 
-    mock: function(test, value) {
-        // Lazy initiation
-        if( ! _load )
-            init();
+    _cache: [],
 
-        // Add an item to the cache
-        cache.push({
-            test: test,
-            value: value
-        });
+    mock: function(test, value) {
+        createMock.call(this, test, value, 'mock');
     },
 
     suppress: function(test) {
-        this.mock(test, void 0);
+        createMock.call(this, test, void 0, 'sup');
     },
 
     unmock: function(test) {
-        if( test instanceof RegExp )
-            test = ('' + test);
-
-        cache = cache.filter( function(def) {
-                // If we have a regex we make a string
-                // to compare
-                var cmp = (def.test instanceof RegExp) ? '' + def.test : def.test;
-
-                return test !== cmp;
-            });
+        remove.call(this, test, 'mock');
     },
 
     unsuppress: function(test) {
-        this.unmock(test);
+        remove.call(this, test, 'sup');
     },
 
     unmockAll: function() {
-        cache = [];
+        removeAll.call(this, 'mock');
     },
 
     unsuppressAll: function() {
-        this.unmockAll();
+        removeAll.call(this, 'sup');
     }
 
 };
