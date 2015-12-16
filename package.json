@@ -4,7 +4,8 @@
   "description": "A mocking utility for node.js require",
   "main": "index.js",
   "scripts": {
-    "test": "mocha"
+    "test": "mocha",
+    "docs": "docco index.js"
   },
   "repository": {
     "type": "git",
@@ -27,6 +28,7 @@
   "homepage": "https://github.com/dak0rn/smock#readme",
   "devDependencies": {
     "chai": "^3.4.1",
+    "docco": "^0.7.0",
     "mocha": "^2.3.4"
   }
 }
