@@ -256,3 +256,46 @@ describe('unsuppress()', function() {
         });
     });
 });
+
+// unsuppressAll function
+describe('unsuppressAll()', function() {
+
+    beforeEach(function() {
+        // Reset the require cache
+        require.cache = {};
+        smock = require('..');
+    });
+
+    it('should take no arguments', function() {
+        expect(smock.unsuppressAll.length).to.equal(0);
+    });
+
+    it('should unsuppressAll correctly when using a string', function() {
+        smock.suppress('unmockAllblah');
+        smock.unsuppressAll();
+
+        var fn = require.bind(this, 'unmockAllblah');
+        expect( fn ).to.throw();
+    });
+
+    it('should unsuppressAll correctly when unsing a regex', function() {
+        smock.suppress(/^regexAllblah/);
+        smock.unsuppressAll();
+
+        ['regexAllblah', 'regexAllblah1', 'regexAllblah2', 'regexAllblahblah'].forEach(function(str) {
+            var fn = require.bind(this, str);
+            expect( fn ).to.throw();
+        });
+    });
+
+    it('should unsuppressAll correctly using callbacks', function() {
+        var filter = function(str) { return 0 === str.indexOf('impAll'); };
+        smock.suppress(filter);
+        smock.unsuppressAll( );
+
+        ['impAll', 'impAll1', 'impAll2', 'impAllblah'].forEach(function(str) {
+            var fn = require.bind(this, str);
+            expect( fn ).to.throw();
+        });
+    });
+});
