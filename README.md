@@ -1,12 +1,12 @@
-# smock
+# prunk
 
-smock is a mocking utility for node.js `require()`. It allows you to
+prunk is a mocking utility for node.js `require()`. It allows you to
 mock or suppress imports based on their name, regular expressions or
 custom test functions.
 
-[![Build Status](https://travis-ci.org/dak0rn/smock.svg?branch=master)](https://travis-ci.org/dak0rn/smock)
-![Dependencies](https://img.shields.io/david/dak0rn/smock.svg)
-![Dev Dependencies](https://img.shields.io/david/dev/dak0rn/smock.svg)
+[![Build Status](https://travis-ci.org/dak0rn/prunk.svg?branch=master)](https://travis-ci.org/dak0rn/prunk)
+![Dependencies](https://img.shields.io/david/dak0rn/prunk.svg)
+![Dev Dependencies](https://img.shields.io/david/dev/dak0rn/prunk.svg)
 
 ## Example
 
@@ -27,13 +27,13 @@ export default class Mycomp extends Component {
 
 ```javascript
 // MyComp.spec.js
-const smock = require('smock');
+const prunk = require('prunk');
 
-smock.mock('style.scss', 'no scss, dude.');
+prunk.mock('style.scss', 'no scss, dude.');
 // or
-smock.mock( function(req) { return 'style.scss' === req; }, 'no scss, dude');
+prunk.mock( function(req) { return 'style.scss' === req; }, 'no scss, dude');
 // or better
-smock.mock( /\.(css|scss|sass)$/, 'no styles, dude');
+prunk.mock( /\.(css|scss|sass)$/, 'no styles, dude');
 
 const MyComp = require('./MyComp');
 ```
@@ -47,20 +47,20 @@ Then, they will always return `undefined`;
 
 ```javascript
 // MyComp.spec.js
-const smock = require('smock');
+const prunk = require('prunk');
 
-smock.suppress('style.scss');
+prunk.suppress('style.scss');
 // or
-smock.suppress( function(req) { return 'style.scss' === req; } );
+prunk.suppress( function(req) { return 'style.scss' === req; } );
 // or better
-smock.suppress( /\.(css|scss|sass)$/ );
+prunk.suppress( /\.(css|scss|sass)$/ );
 
 const MyComp = require('./MyComp');
 ```
 
 ## API
 
-### smock.mock(test, value)
+### prunk.mock(test, value)
 
 Mocks the given import with the given value.
 `test` can be a **function** that is used to compare
@@ -72,27 +72,27 @@ The function's arguments are the same as with `Module._load`.
 Most of the time you will look at the first argument, a `string`.
 
     var mockStyles = (req) => 'style.css' === req;
-    smock.mock( mockStyles, 'no css, dude.');
+    prunk.mock( mockStyles, 'no css, dude.');
 
 `test` can also be a `RegExp` that is matched agains the name
 of the import or a string. It can be anything else, too, if your
 imports are gone totally crazy.
 
-    smock.mock( 'style.css', 'no css, dude.' );
-    smock.mock( /\.(css|scss|sass|less)/, 'no styles, dude.');
+    prunk.mock( 'style.css', 'no css, dude.' );
+    prunk.mock( /\.(css|scss|sass|less)/, 'no styles, dude.');
 
 
-### smock.unmock(test)
+### prunk.unmock(test)
 
 Removes the mock registered for the given `test`.
 `unmock()` uses strict equal to compare the registered
 mocks.
 
-### smock.unmockAll()
+### prunk.unmockAll()
 
 Removes all mocks
 
-### smock.suppress(test)
+### prunk.suppress(test)
 
 Suppresses all imports that matches the given `test`.
 `test` can be a **function** that is used to compare
@@ -104,24 +104,24 @@ The function's arguments are the same as with `Module._load`.
 Most of the time you will look at the first argument, a `string`.
 
     var mockStyles = (req) => 'style.css' === req;
-    smock.mock( mockStyles, 'no css, dude.');
+    prunk.mock( mockStyles, 'no css, dude.');
 
 `test` can also be a `RegExp` that is matched agains the name
 of the import or a string or something else.
 
-    smock.mock( 'style.css', 'no css, dude.' );
-    smock.mock( /\.(css|scss|sass|less)/, 'no styles, dude.');
+    prunk.mock( 'style.css', 'no css, dude.' );
+    prunk.mock( /\.(css|scss|sass|less)/, 'no styles, dude.');
 
-### smock.unsuppress(test)
+### prunk.unsuppress(test)
 
 Removes the mock registered for the given `test`.
 `unsuppress()` uses strict equal to compare the suppressed
 imports.
 
-### smock.unsuppressAll()
+### prunk.unsuppressAll()
 
 Removes all suppressed imports
 
 ## Documentation
 
-[Documented source](https://dak0rn.github.io/smock/).
+[Documented source](https://dak0rn.github.io/prunk/).
