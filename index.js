@@ -54,19 +54,21 @@ var init = function() {
 // Export
 module.exports = {
 
-    mock: function(what, value) {
+    mock: function(test, value) {
         // Lazy initiation
         if( ! _load )
             init();
 
         // Add an item to the cache
         cache.push({
-            test: what,
+            test: test,
             value: value
         });
     },
 
-    suppress: function() {},
+    suppress: function(test) {
+        this.mock(test, void 0);
+    },
 
     unmock: function(test) {
         if( test instanceof RegExp )
