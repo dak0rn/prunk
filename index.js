@@ -83,7 +83,9 @@ module.exports = {
             });
     },
 
-    unsuppress: function() {},
+    unsuppress: function(test) {
+        this.unmock(test);
+    },
 
     unmockAll: function() {
         cache = [];
