@@ -121,8 +121,8 @@ var removeAll = function(type) {
     });
 };
 
-// ## Exports
-module.exports = {
+// ## The prunk object
+var prunk = {
 
     // Provide access to the cache.
     // This is done to make the testing more reliable.
@@ -154,8 +154,10 @@ module.exports = {
     //     prunk.mock( 'style.css', 'no css, dude.' );
     //     prunk.mock( /\.(css|scss|sass|less)/, 'no styles, dude.');
     //
+    // It returns the prunk object so that you can chain calls.
     mock: function(test, value) {
         createMock(test, value, 'mock');
+        return prunk;
     },
 
     // ### suppress
@@ -163,36 +165,49 @@ module.exports = {
     // returns `undefined`.
     // The `test` argument is the same as used by [mock()](#section-25).
     //
+    // It returns the prunk object so that you can chain calls.
     suppress: function(test) {
         createMock(test, void 0, 'sup');
+        return prunk;
     },
 
     // ### unmock
     // Removes the mock registered for the given `test`.
     // `unmock()` uses strict equal to compare the registered
     // mocks.
+    // It returns the prunk object so that you can chain calls.
     unmock: function(test) {
         remove(test, 'mock');
+        return prunk;
     },
 
     // ### unsuppress
     // Removes the mock registered for the given `test`.
     // `unsuppress()` uses strict equal to compare the suppressed
     // imports.
+    // It returns the prunk object so that you can chain calls.
     unsuppress: function(test) {
         remove(test, 'sup');
+        return prunk;
     },
 
     // ### unmockAll
     // Removes all mocks for imports
+    // It returns the prunk object so that you can chain calls.
     unmockAll: function() {
         removeAll('mock');
+        return prunk;
     },
 
     // ### unsuppressAll
     // Removes all suppressed imports
+    // It returns the prunk object so that you can chain calls.
     unsuppressAll: function() {
         removeAll('sup');
+        return prunk;
     }
 
 };
+
+// ## Exports
+module.exports = prunk;
