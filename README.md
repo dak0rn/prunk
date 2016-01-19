@@ -71,21 +71,27 @@ mocked with the given value.
 The function's arguments are the same as with `Module._load`.
 Most of the time you will look at the first argument, a `string`.
 
-    var mockStyles = (req) => 'style.css' === req;
-    prunk.mock( mockStyles, 'no css, dude.');
+```javascript
+var mockStyles = (req) => 'style.css' === req;
+prunk.mock( mockStyles, 'no css, dude.');
+```
 
 `test` can also be a `RegExp` that is matched agains the name
 of the import or a string. It can be anything else, too, if your
 imports are gone totally crazy.
 
-    prunk.mock( 'style.css', 'no css, dude.' );
-    prunk.mock( /\.(css|scss|sass|less)/, 'no styles, dude.');
+```javascript
+prunk.mock( 'style.css', 'no css, dude.' );
+prunk.mock( /\.(css|scss|sass|less)/, 'no styles, dude.');
+```
 
 This function returns the prunk object so that you can chain calls.
 
-    prunk.mock( ... )
-         .mock( ... )
-         .mock( ... );
+```javascript
+prunk.mock( ... )
+     .mock( ... )
+     .mock( ... );
+```
 
 ### prunk.unmock(test)
 
@@ -111,14 +117,18 @@ and thus returns `undefined`.
 The function's arguments are the same as with `Module._load`.
 Most of the time you will look at the first argument, a `string`.
 
-    var mockStyles = (req) => 'style.css' === req;
-    prunk.mock( mockStyles, 'no css, dude.');
+```javascript
+var mockStyles = (req) => 'style.css' === req;
+prunk.mock( mockStyles, 'no css, dude.');
+```
 
 `test` can also be a `RegExp` that is matched agains the name
 of the import or a string or something else.
 
-    prunk.mock( 'style.css', 'no css, dude.' );
-    prunk.mock( /\.(css|scss|sass|less)/, 'no styles, dude.');
+```javascript
+prunk.mock( 'style.css', 'no css, dude.' );
+prunk.mock( /\.(css|scss|sass|less)/, 'no styles, dude.');
+```
 
 This function returns the prunk object so that you can chain calls.
 
