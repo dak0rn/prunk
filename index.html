@@ -409,11 +409,11 @@ we use the string representation of RegExp’s</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-23">&#182;</a>
               </div>
-              <h2 id="exports">Exports</h2>
+              <h2 id="the-prunk-object">The prunk object</h2>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre><span class="hljs-built_in">module</span>.exports = {</pre></div></div>
+            <div class="content"><div class='highlight'><pre><span class="hljs-keyword">var</span> prunk = {</pre></div></div>
             
         </li>
         
@@ -461,11 +461,13 @@ of the import or a string. It can be anything else, too, if your
 imports are gone totally crazy.</p>
 <pre><code>prunk.mock( <span class="hljs-string">'style.css'</span>, <span class="hljs-string">'no css, dude.'</span> );
 prunk.mock( <span class="hljs-regexp">/\.(css|scss|sass|less)/</span>, <span class="hljs-string">'no styles, dude.'</span>);
-</code></pre>
+</code></pre><p>It returns the prunk object so that you can chain calls.</p>
+
             </div>
             
             <div class="content"><div class='highlight'><pre>    mock: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">test, value</span>) </span>{
         createMock(test, value, <span class="hljs-string">'mock'</span>);
+        <span class="hljs-keyword">return</span> prunk;
     },</pre></div></div>
             
         </li>
@@ -481,11 +483,13 @@ prunk.mock( <span class="hljs-regexp">/\.(css|scss|sass|less)/</span>, <span cla
 <p>Suppresses the given import. A suppressed import always
 returns <code>undefined</code>.
 The <code>test</code> argument is the same as used by <a href="#section-25">mock()</a>.</p>
+<p>It returns the prunk object so that you can chain calls.</p>
 
             </div>
             
             <div class="content"><div class='highlight'><pre>    suppress: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">test</span>) </span>{
         createMock(test, <span class="hljs-keyword">void</span> <span class="hljs-number">0</span>, <span class="hljs-string">'sup'</span>);
+        <span class="hljs-keyword">return</span> prunk;
     },</pre></div></div>
             
         </li>
@@ -500,12 +504,14 @@ The <code>test</code> argument is the same as used by <a href="#section-25">mock
               <h3 id="unmock">unmock</h3>
 <p>Removes the mock registered for the given <code>test</code>.
 <code>unmock()</code> uses strict equal to compare the registered
-mocks.</p>
+mocks.
+It returns the prunk object so that you can chain calls.</p>
 
             </div>
             
             <div class="content"><div class='highlight'><pre>    unmock: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">test</span>) </span>{
         remove(test, <span class="hljs-string">'mock'</span>);
+        <span class="hljs-keyword">return</span> prunk;
     },</pre></div></div>
             
         </li>
@@ -520,12 +526,14 @@ mocks.</p>
               <h3 id="unsuppress">unsuppress</h3>
 <p>Removes the mock registered for the given <code>test</code>.
 <code>unsuppress()</code> uses strict equal to compare the suppressed
-imports.</p>
+imports.
+It returns the prunk object so that you can chain calls.</p>
 
             </div>
             
             <div class="content"><div class='highlight'><pre>    unsuppress: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">test</span>) </span>{
         remove(test, <span class="hljs-string">'sup'</span>);
+        <span class="hljs-keyword">return</span> prunk;
     },</pre></div></div>
             
         </li>
@@ -538,12 +546,14 @@ imports.</p>
                 <a class="pilcrow" href="#section-29">&#182;</a>
               </div>
               <h3 id="unmockall">unmockAll</h3>
-<p>Removes all mocks for imports</p>
+<p>Removes all mocks for imports
+It returns the prunk object so that you can chain calls.</p>
 
             </div>
             
             <div class="content"><div class='highlight'><pre>    unmockAll: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
         removeAll(<span class="hljs-string">'mock'</span>);
+        <span class="hljs-keyword">return</span> prunk;
     },</pre></div></div>
             
         </li>
@@ -556,15 +566,32 @@ imports.</p>
                 <a class="pilcrow" href="#section-30">&#182;</a>
               </div>
               <h3 id="unsuppressall">unsuppressAll</h3>
-<p>Removes all suppressed imports</p>
+<p>Removes all suppressed imports
+It returns the prunk object so that you can chain calls.</p>
 
             </div>
             
             <div class="content"><div class='highlight'><pre>    unsuppressAll: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
         removeAll(<span class="hljs-string">'sup'</span>);
+        <span class="hljs-keyword">return</span> prunk;
     }
 
 };</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-31">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-31">&#182;</a>
+              </div>
+              <h2 id="exports">Exports</h2>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-built_in">module</span>.exports = prunk;</pre></div></div>
             
         </li>
         
