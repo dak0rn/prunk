@@ -81,6 +81,11 @@ imports are gone totally crazy.
     prunk.mock( 'style.css', 'no css, dude.' );
     prunk.mock( /\.(css|scss|sass|less)/, 'no styles, dude.');
 
+This function returns the prunk object so that you can chain calls.
+
+    prunk.mock( ... )
+         .mock( ... )
+         .mock( ... );
 
 ### prunk.unmock(test)
 
@@ -88,9 +93,12 @@ Removes the mock registered for the given `test`.
 `unmock()` uses strict equal to compare the registered
 mocks.
 
+This function returns the prunk object so that you can chain calls.
+
 ### prunk.unmockAll()
 
-Removes all mocks
+Removes all mocks.
+This function returns the prunk object so that you can chain calls.
 
 ### prunk.suppress(test)
 
@@ -112,15 +120,19 @@ of the import or a string or something else.
     prunk.mock( 'style.css', 'no css, dude.' );
     prunk.mock( /\.(css|scss|sass|less)/, 'no styles, dude.');
 
+This function returns the prunk object so that you can chain calls.
+
 ### prunk.unsuppress(test)
 
 Removes the mock registered for the given `test`.
 `unsuppress()` uses strict equal to compare the suppressed
 imports.
+This function returns the prunk object so that you can chain calls.
 
 ### prunk.unsuppressAll()
 
-Removes all suppressed imports
+Removes all suppressed imports.
+This function returns the prunk object so that you can chain calls.
 
 ## Documentation
 

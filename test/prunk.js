@@ -89,6 +89,10 @@ describe('mock()', function() {
         expect( require('bash') ).to.equal('success');
     });
 
+    it('should return the prunk object again', function() {
+        expect( prunk.mock() ).to.equal( prunk );
+    });
+
 });
 
 
@@ -140,6 +144,10 @@ describe('unmock()', function() {
         prunk.unmock('supmepls');
 
         expect( require('supmepls') ).to.be.undefined;
+    });
+
+    it('should return the prunk object again', function() {
+        expect( prunk.unmock() ).to.equal( prunk );
     });
 });
 
@@ -197,6 +205,10 @@ describe('unmockAll()', function() {
             expect( require(what) ).to.be.undefined;
         });
     });
+
+    it('should return the prunk object again', function() {
+        expect( prunk.unmockAll() ).to.equal( prunk );
+    });
 });
 
 // suppress() function
@@ -246,6 +258,10 @@ describe('suppress()', function() {
         prunk.suppress('fish');
 
         expect( require('fish') ).to.be.undefined;
+    });
+
+    it('should return the prunk object again', function() {
+        expect( prunk.suppress() ).to.equal( prunk );
     });
 });
 
@@ -297,6 +313,10 @@ describe('unsuppress()', function() {
         prunk.unsuppress('keepmepls');
 
         expect( require('keepmepls') ).to.equal(0.4);
+    });
+
+    it('should return the prunk object again', function() {
+        expect( prunk.unsuppress() ).to.equal( prunk );
     });
 });
 
@@ -353,5 +373,9 @@ describe('unsuppressAll()', function() {
         ['mockAll3', 'mockAll2', 'mockAll1'].forEach( function(what) {
             expect( require(what) ).to.equal('$$mocked');
         });
+    });
+
+    it('should return the prunk object again', function() {
+        expect( prunk.unsuppressAll() ).to.equal( prunk );
     });
 });
