@@ -136,7 +136,7 @@ name of whatever was required.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-8">&#182;</a>
               </div>
-              <p>Find the tests that match …</p>
+              <p>Find the tests that match</p>
 
             </div>
             
@@ -185,13 +185,13 @@ function decide</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-11">&#182;</a>
               </div>
-              <p>Last case: we simply have no idea
-Thus, we use a strict equal</p>
+              <p>If there is an alias we check if the string starts
+with the desired test</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>                            <span class="hljs-keyword">return</span> test === req;
-                        })</pre></div></div>
+            <div class="content"><div class='highlight'><pre>                            <span class="hljs-keyword">if</span>( <span class="hljs-string">'alias'</span> === mockDef._type )
+                                <span class="hljs-keyword">return</span> req.startsWith( mockDef.test );</pre></div></div>
             
         </li>
         
@@ -202,12 +202,12 @@ Thus, we use a strict equal</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-12">&#182;</a>
               </div>
-              <p>… and grab the mocked value from it</p>
+              <p>Last case: we simply have no idea
+Thus, we use a strict equal</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>                        .map( <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">mockDef</span>) </span>{
-                            <span class="hljs-keyword">return</span> mockDef.value;
+            <div class="content"><div class='highlight'><pre>                            <span class="hljs-keyword">return</span> test === req;
                         });</pre></div></div>
             
         </li>
@@ -225,8 +225,9 @@ uses <code>Array.prototype.unshift</code> we always use the mock added at last.<
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>        <span class="hljs-keyword">if</span>( mock.length )
-            <span class="hljs-keyword">return</span> mock[<span class="hljs-number">0</span>];</pre></div></div>
+            <div class="content"><div class='highlight'><pre>        <span class="hljs-keyword">if</span>( mock.length ) {
+            mock = mock[<span class="hljs-number">0</span>];
+            value = mock.value;</pre></div></div>
             
         </li>
         
@@ -237,13 +238,12 @@ uses <code>Array.prototype.unshift</code> we always use the mock added at last.<
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-14">&#182;</a>
               </div>
-              <p>No mock; let the load system do its work</p>
+              <p>Aliases are a bit special</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>        <span class="hljs-keyword">return</span> _load.apply(Module, <span class="hljs-built_in">arguments</span>);
-    };
-};</pre></div></div>
+            <div class="content"><div class='highlight'><pre>            <span class="hljs-keyword">if</span>( <span class="hljs-string">'alias'</span> !== mock._type )
+                <span class="hljs-keyword">return</span> value;</pre></div></div>
             
         </li>
         
@@ -253,6 +253,57 @@ uses <code>Array.prototype.unshift</code> we always use the mock added at last.<
               
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-15">&#182;</a>
+              </div>
+              <p>If the alias is a function we let that function do the
+transformation of the path</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>            <span class="hljs-keyword">if</span>( <span class="hljs-string">'function'</span> === <span class="hljs-keyword">typeof</span> value )
+                req = value(req);</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-16">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-16">&#182;</a>
+              </div>
+              <p>If it is not a function we use string replacement</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>            <span class="hljs-keyword">else</span>
+                req = req.replace(mock.test, value);
+        }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-17">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-17">&#182;</a>
+              </div>
+              <p>No mock; let the load system do its work</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        <span class="hljs-keyword">return</span> _load.call(Module, req, parent, isMain);
+    };
+};</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-18">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-18">&#182;</a>
               </div>
               <h2 id="createmock">createMock</h2>
 <p>Creates a mock with the given test, mocking with the given
@@ -270,11 +321,11 @@ value and use the given type.</p>
         </li>
         
         
-        <li id="section-16">
+        <li id="section-19">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-16">&#182;</a>
+                <a class="pilcrow" href="#section-19">&#182;</a>
               </div>
               <p>Initialize the cache if not done already</p>
 
@@ -286,11 +337,11 @@ value and use the given type.</p>
         </li>
         
         
-        <li id="section-17">
+        <li id="section-20">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-17">&#182;</a>
+                <a class="pilcrow" href="#section-20">&#182;</a>
               </div>
               <p>Push the new item to the front</p>
 
@@ -306,11 +357,11 @@ value and use the given type.</p>
         </li>
         
         
-        <li id="section-18">
+        <li id="section-21">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-18">&#182;</a>
+                <a class="pilcrow" href="#section-21">&#182;</a>
               </div>
               <h2 id="remove">remove</h2>
 <p>Removes a mock definition from the collection.</p>
@@ -326,11 +377,11 @@ value and use the given type.</p>
         </li>
         
         
-        <li id="section-19">
+        <li id="section-22">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-19">&#182;</a>
+                <a class="pilcrow" href="#section-22">&#182;</a>
               </div>
               <p>We want to use strict equals below thus
 we use the string representation of RegExp’s</p>
@@ -345,11 +396,11 @@ we use the string representation of RegExp’s</p>
         </li>
         
         
-        <li id="section-20">
+        <li id="section-23">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-20">&#182;</a>
+                <a class="pilcrow" href="#section-23">&#182;</a>
               </div>
               <p>If the type does not match we ignore it</p>
 
@@ -361,11 +412,11 @@ we use the string representation of RegExp’s</p>
         </li>
         
         
-        <li id="section-21">
+        <li id="section-24">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-21">&#182;</a>
+                <a class="pilcrow" href="#section-24">&#182;</a>
               </div>
               <p>Again, convert RegExp’s if found</p>
 
@@ -380,11 +431,11 @@ we use the string representation of RegExp’s</p>
         </li>
         
         
-        <li id="section-22">
+        <li id="section-25">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-22">&#182;</a>
+                <a class="pilcrow" href="#section-25">&#182;</a>
               </div>
               <h2 id="removeall">removeAll</h2>
 <p>Removes all mocks of the given type</p>
@@ -403,11 +454,11 @@ we use the string representation of RegExp’s</p>
         </li>
         
         
-        <li id="section-23">
+        <li id="section-26">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-23">&#182;</a>
+                <a class="pilcrow" href="#section-26">&#182;</a>
               </div>
               <h2 id="the-prunk-object">The prunk object</h2>
 
@@ -418,11 +469,11 @@ we use the string representation of RegExp’s</p>
         </li>
         
         
-        <li id="section-24">
+        <li id="section-27">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-24">&#182;</a>
+                <a class="pilcrow" href="#section-27">&#182;</a>
               </div>
               <p>Provide access to the cache.
 This is done to make the testing more reliable.</p>
@@ -440,11 +491,11 @@ This is done to make the testing more reliable.</p>
         </li>
         
         
-        <li id="section-25">
+        <li id="section-28">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-25">&#182;</a>
+                <a class="pilcrow" href="#section-28">&#182;</a>
               </div>
               <h3 id="mock">mock</h3>
 <p>Mocks the given import with the given value.
@@ -473,11 +524,11 @@ prunk.mock( <span class="hljs-regexp">/\.(css|scss|sass|less)/</span>, <span cla
         </li>
         
         
-        <li id="section-26">
+        <li id="section-29">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-26">&#182;</a>
+                <a class="pilcrow" href="#section-29">&#182;</a>
               </div>
               <h3 id="suppress">suppress</h3>
 <p>Suppresses the given import. A suppressed import always
@@ -495,11 +546,11 @@ The <code>test</code> argument is the same as used by <a href="#section-25">mock
         </li>
         
         
-        <li id="section-27">
+        <li id="section-30">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-27">&#182;</a>
+                <a class="pilcrow" href="#section-30">&#182;</a>
               </div>
               <h3 id="unmock">unmock</h3>
 <p>Removes the mock registered for the given <code>test</code>.
@@ -517,11 +568,11 @@ It returns the prunk object so that you can chain calls.</p>
         </li>
         
         
-        <li id="section-28">
+        <li id="section-31">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-28">&#182;</a>
+                <a class="pilcrow" href="#section-31">&#182;</a>
               </div>
               <h3 id="unsuppress">unsuppress</h3>
 <p>Removes the mock registered for the given <code>test</code>.
@@ -539,11 +590,11 @@ It returns the prunk object so that you can chain calls.</p>
         </li>
         
         
-        <li id="section-29">
+        <li id="section-32">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-29">&#182;</a>
+                <a class="pilcrow" href="#section-32">&#182;</a>
               </div>
               <h3 id="unmockall">unmockAll</h3>
 <p>Removes all mocks for imports
@@ -559,11 +610,11 @@ It returns the prunk object so that you can chain calls.</p>
         </li>
         
         
-        <li id="section-30">
+        <li id="section-33">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-30">&#182;</a>
+                <a class="pilcrow" href="#section-33">&#182;</a>
               </div>
               <h3 id="unsuppressall">unsuppressAll</h3>
 <p>Removes all suppressed imports
@@ -574,6 +625,86 @@ It returns the prunk object so that you can chain calls.</p>
             <div class="content"><div class='highlight'><pre>    unsuppressAll: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
         removeAll(<span class="hljs-string">'sup'</span>);
         <span class="hljs-keyword">return</span> prunk;
+    },</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-34">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-34">&#182;</a>
+              </div>
+              <h3 id="alias">alias</h3>
+<p>Aliases a path that begins with the given
+string or matches the given regex.
+This basically performs a string replacement if
+you provide a simple string or a regex.
+The regular expressions <strong>must contain</strong> at least
+one grouping expression <code>(...)</code> so that the replacement
+actually happens.
+<code>alias</code> can also be a function that gets the path and
+returns an updated one.
+You can only provide a predicate function for <code>test</code>
+if <code>alias</code> is also a function returning a modified path.
+This method will throw if arguments are invalid.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    alias: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">test, alias</span>) </span>{
+
+        <span class="hljs-keyword">if</span>( <span class="hljs-string">'undefined'</span> === <span class="hljs-keyword">typeof</span> alias )
+            <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Error</span>(<span class="hljs-string">'prunk.alias needs a second argument'</span>);
+
+        <span class="hljs-keyword">if</span>( <span class="hljs-string">'function'</span> === <span class="hljs-keyword">typeof</span> test &amp;&amp; <span class="hljs-string">'function'</span> !== <span class="hljs-keyword">typeof</span> alias )
+            <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Error</span>(<span class="hljs-string">'prunk.alias has been passed a function as test but not as alias'</span>);
+
+        <span class="hljs-keyword">if</span>( test <span class="hljs-keyword">instanceof</span> <span class="hljs-built_in">RegExp</span> &amp;&amp; ! test.toString().includes(<span class="hljs-string">'('</span>) )
+            <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Error</span>(<span class="hljs-string">'prunk.alias has been passed a RegExp without a grouping expression'</span>);
+
+        createMock(test, alias, <span class="hljs-string">'alias'</span>);
+        <span class="hljs-keyword">return</span> prunk;
+    },</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-35">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-35">&#182;</a>
+              </div>
+              <h3 id="unalias">unalias</h3>
+<p>Removes the alias for the given test
+It returns the prunk object so that you can chain calls.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    unalias: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">test</span>) </span>{
+        remove(test, <span class="hljs-string">'alias'</span>);
+        <span class="hljs-keyword">return</span> prunk;
+    },</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-36">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-36">&#182;</a>
+              </div>
+              <h3 id="unaliasall">unaliasAll</h3>
+<p>Removes all aliases
+It returns the prunk object so that you can chain calls.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    unaliasAll: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+        removeAll(<span class="hljs-string">'alias'</span>);
+        <span class="hljs-keyword">return</span> prunk;
     }
 
 };</pre></div></div>
@@ -581,11 +712,11 @@ It returns the prunk object so that you can chain calls.</p>
         </li>
         
         
-        <li id="section-31">
+        <li id="section-37">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-31">&#182;</a>
+                <a class="pilcrow" href="#section-37">&#182;</a>
               </div>
               <h2 id="exports">Exports</h2>
 
