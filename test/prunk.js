@@ -425,6 +425,22 @@ describe('alias()', function() {
         expect( imp ).to.equal('ab');
     });
 
+    it('should alias correctly using a string and a callback', function() {
+        var aliaser = function() { return './b'; };
+        prunk.alias( 'a', aliaser );
+
+        var imp = require('a');
+        expect( imp ).to.equal('b');
+    });
+
+    it('should alias correctly using a regex and a callback', function() {
+        var aliaser = function() { return './b'; };
+        prunk.alias( /^(a)/, aliaser );
+
+        var imp = require('a');
+        expect( imp ).to.equal('b');
+    });
+
     it('should alias correctly using callbacks', function() {
         var matcher = function(path) { return null !== path.match(/^a/); };
         var aliaser = function() { return './b'; };
