@@ -32,7 +32,7 @@ var init = function() {
 
         // Take the cache...
         var mock = cache
-                        // Find the tests that match ...
+                        // Find the tests that match
                         .filter(function(mockDef) {
                             var test = mockDef.test;
 
@@ -45,23 +45,38 @@ var init = function() {
                             if( 'function' === typeof test )
                                 return !! test(req, parent, isMain);
 
+                            // If there is an alias we check if the string starts
+                            // with the desired test
+                            if( 'alias' === mockDef._type )
+                                return req.startsWith( mockDef.test );
+
                             // Last case: we simply have no idea
                             // Thus, we use a strict equal
                             return test === req;
-                        })
-                        // ... and grab the mocked value from it
-                        .map( function(mockDef) {
-                            return mockDef.value;
                         });
 
         // If we found a mocked import we return it.
         // We only use the first mock we find. Since the `createMock()` function
         // uses `Array.prototype.unshift` we always use the mock added at last.
-        if( mock.length )
-            return mock[0];
+        if( mock.length ) {
+            mock = mock[0];
+            value = mock.value;
+
+            // Aliases are a bit special
+            if( 'alias' !== mock._type )
+                return value;
+
+            // If the alias is a function we let that function do the
+            // transformation of the path
+            if( 'function' === typeof value )
+                req = value(req);
+            // If it is not a function we use string replacement
+            else
+                req = req.replace(mock.test, value);
+        }
 
         // No mock; let the load system do its work
-        return _load.apply(Module, arguments);
+        return _load.call(Module, req, parent, isMain);
     };
 };
 
@@ -204,6 +219,50 @@ var prunk = {
     // It returns the prunk object so that you can chain calls.
     unsuppressAll: function() {
         removeAll('sup');
+        return prunk;
+    },
+
+    // ### alias
+    // Aliases a path that begins with the given
+    // string or matches the given regex.
+    // This basically performs a string replacement if
+    // you provide a simple string or a regex.
+    // The regular expressions **must contain** at least
+    // one grouping expression `(...)` so that the replacement
+    // actually happens.
+    // `alias` can also be a function that gets the path and
+    // returns an updated one.
+    // You can only provide a predicate function for `test`
+    // if `alias` is also a function returning a modified path.
+    // This method will throw if arguments are invalid.
+    alias: function(test, alias) {
+
+        if( 'undefined' === typeof alias )
+            throw new Error('prunk.alias needs a second argument');
+
+        if( 'function' === typeof test && 'function' !== typeof alias )
+            throw new Error('prunk.alias has been passed a function as test but not as alias');
+
+        if( test instanceof RegExp && ! test.toString().includes('(') )
+            throw new Error('prunk.alias has been passed a RegExp without a grouping expression');
+
+        createMock(test, alias, 'alias');
+        return prunk;
+    },
+
+    // ### unalias
+    // Removes the alias for the given test
+    // It returns the prunk object so that you can chain calls.
+    unalias: function(test) {
+        remove(test, 'alias');
+        return prunk;
+    },
+
+    // ### unaliasAll
+    // Removes all aliases
+    // It returns the prunk object so that you can chain calls.
+    unaliasAll: function() {
+        removeAll('alias');
         return prunk;
     }
 
