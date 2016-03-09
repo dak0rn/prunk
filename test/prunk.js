@@ -435,10 +435,12 @@ describe('alias()', function() {
     });
 
     it('should only alias at the beginning of a path', function() {
-        prunk.alias('a', './b');
+        prunk.alias('b', 'a');
+        var wrapper = function() {
+            require('b/a/b/c');
+        };
 
-        var imp = require('../test/a');
-        expect( imp ).to.equal('a');
+        expect( wrapper ).to.throw('a/a/b/c');
     });
 
     it('should return the prunk object again', function() {
