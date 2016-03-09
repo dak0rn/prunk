@@ -40,6 +40,18 @@ describe('Export', function() {
        expect( prunk.unsuppressAll ).to.be.a('function');
     });
 
+    it('should have an alias() function', function() {
+       expect( prunk.alias ).to.be.a('function');
+    });
+
+    it('should have an unalias() function', function() {
+       expect( prunk.unalias ).to.be.a('function');
+    });
+
+    it('should have a unaliasAll() function', function() {
+       expect( prunk.unaliasAll ).to.be.a('function');
+    });
+
 });
 
 // mock function
@@ -377,5 +389,190 @@ describe('unsuppressAll()', function() {
 
     it('should return the prunk object again', function() {
         expect( prunk.unsuppressAll() ).to.equal( prunk );
+    });
+});
+
+// alias() function
+describe('alias()', function() {
+
+    beforeEach(function() {
+        // Reset the require cache
+        require.cache = {};
+        prunk = require('..');
+
+        // Make sure, the internal cache is empty
+        prunk._cache = [];
+    });
+
+    it('should take two arguments', function() {
+        expect(prunk.alias.length).to.equal(2);
+    });
+
+    it('should alias correctly when using a string', function() {
+        prunk.alias('a', './b');
+
+        var imp = require('a');
+        expect( imp ).to.equal('b');
+    });
+
+    it('should alias correctly when unsing a regex', function() {
+        prunk.alias(/^(b)/, './a');
+
+        var imp = require('b');
+        expect( imp ).to.equal('a');
+
+        imp = require('bb');
+        expect( imp ).to.equal('ab');
+    });
+
+    it('should alias correctly using a string and a callback', function() {
+        var aliaser = function() { return './b'; };
+        prunk.alias( 'a', aliaser );
+
+        var imp = require('a');
+        expect( imp ).to.equal('b');
+    });
+
+    it('should alias correctly using a regex and a callback', function() {
+        var aliaser = function() { return './b'; };
+        prunk.alias( /^(a)/, aliaser );
+
+        var imp = require('a');
+        expect( imp ).to.equal('b');
+    });
+
+    it('should alias correctly using callbacks', function() {
+        var matcher = function(path) { return null !== path.match(/^a/); };
+        var aliaser = function() { return './b'; };
+        prunk.alias( matcher, aliaser );
+
+        var imp = require('a');
+        expect( imp ).to.equal('b');
+    });
+
+    it('should only alias at the beginning of a path', function() {
+        prunk.alias('b', 'a');
+        var wrapper = function() {
+            require('b/a/b/c');
+        };
+
+        expect( wrapper ).to.throw('a/a/b/c');
+    });
+
+    it('should return the prunk object again', function() {
+        expect( prunk.alias('a', 'b') ).to.equal( prunk );
+    });
+
+    it('should throw if only one argument is given', function() {
+        var wrapper = function() {
+            prunk.alias('b');
+        };
+
+        expect( wrapper ).to.throw();
+    })
+
+    it('should throw if the regex does not contain a grouping', function() {
+        var wrapper = function() {
+            prunk.alias(/^abc/, 'abc');
+        };
+
+        expect( wrapper ).to.throw();
+    });
+
+    it('should throw if passed a function as first but not as second argument', function() {
+        var wrapper = function() {
+            prunk.alias(function() {}, 42);
+        };
+
+        expect(wrapper).to.throw();
+    });
+
+});
+
+describe('unalias', function() {
+
+    beforeEach(function() {
+        // Reset the require cache
+        require.cache = {};
+        prunk = require('..');
+        prunk._cache = [];
+    });
+
+    it('should take one argument', function() {
+        expect(prunk.unalias.length).to.equal(1);
+    });
+
+    it('should unalias correctly when using a string', function() {
+        prunk.alias('./a', './b');
+        prunk.unalias('./a');
+
+        var imp = require('./a');
+        expect( imp ).to.equal('a');
+    });
+
+    it('should unalias correctly when unsing a regex', function() {
+        prunk.alias(/^(a)/, 'b');
+        prunk.unalias(/^(a)/);
+
+        var imp = require('./a');
+        expect( imp ).to.equal('a');
+    });
+
+    it('should unalias correctly using callbacks', function() {
+        var matcher = function(path) { return null !== path.match(/^a/); };
+        prunk.alias(matcher, matcher);
+        prunk.unalias( matcher );
+
+        var imp = require('./a');
+        expect( imp ).to.equal('a');
+    });
+
+    it('should return the prunk object again', function() {
+        expect( prunk.unalias() ).to.equal( prunk );
+    });
+
+});
+
+// unaliasAll function
+describe('unaliasAll()', function() {
+
+    beforeEach(function() {
+        // Reset the require cache
+        require.cache = {};
+        prunk = require('..');
+        prunk._cache = [];
+    });
+
+    it('should take no arguments', function() {
+        expect(prunk.unaliasAll.length).to.equal(0);
+    });
+
+    it('should unaliasAll correctly when using a string', function() {
+        prunk.alias('./a', './b');
+        prunk.unaliasAll();
+
+        var imp = require('./a');
+        expect( imp ).to.equal('a');
+    });
+
+    it('should unaliasAll correctly when unsing a regex', function() {
+        prunk.alias(/^(a)/, 'b');
+        prunk.unaliasAll();
+
+        var imp = require('./a');
+        expect( imp ).to.equal('a');
+    });
+
+    it('should unaliasAll correctly using callbacks', function() {
+        var matcher = function(path) { return null !== path.match(/^a/); };
+        prunk.alias(matcher, matcher);
+        prunk.unaliasAll();
+
+        var imp = require('./a');
+        expect( imp ).to.equal('a');
+    });
+
+    it('should return the prunk object again', function() {
+        expect( prunk.unaliasAll() ).to.equal( prunk );
     });
 });

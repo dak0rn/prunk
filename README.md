@@ -10,8 +10,13 @@ custom test functions.
 
 ## Example
 
-Given you have a React component you want to test. However, since
-this component imports a SCSS file you cannot the import component directly.
+The great thing about testing React components is that you do not need
+a web browser but can run tests and render components directly in node.
+This can be a bit tricky if you use a development environment that allows
+you to import non-JavaScript resources (e.g. templates or stylesheets) in your code.
+
+Given you have a React component you want to test. This component imports a
+SCSS files so that the import in node would fail.
 At this point, you either can introduce a pre-compiler, loader or whatever
 your test framework supports or you can simply mock the import.
 
@@ -38,11 +43,13 @@ prunk.mock( /\.(css|scss|sass)$/, 'no styles, dude');
 const MyComp = require('./MyComp');
 ```
 
-In the test `require()` is used instead of `import` because some pre-compilers
+In the test, `require()` is used instead of `import` because some pre-compilers
 move all imports to the top of the file and that would make the mocking impossible.
-If you use mocha you can use [compiler](https://mochajs.org/#usage) for that.
+If you use mocha you can leverage it's [compiler](https://mochajs.org/#usage) configuration for that.
+(You might also check out [this](https://65535th.com/testing-react-components/) post with an example).
 
-If you just and to make sure some things don't get imported you can suppress them.
+The example above uses `.mock()` to replace the required module contents.
+If you just want to make sure some things don't get imported in the first place you can suppress them.
 Then, they will always return `undefined`;
 
 ```javascript
@@ -63,29 +70,34 @@ const MyComp = require('./MyComp');
 ### prunk.mock(test, value)
 
 Mocks the given import with the given value.
-`test` can be a **function** that is used to compare
-whatever is required and returns `true` or `false`.
+`test` can be a predicate **function** that is used to compare
+whatever is required and returns either `true` or `false`.
 If the return value is truthy the import will be
 mocked with the given value.
 
-The function's arguments are the same as with `Module._load`.
-Most of the time you will look at the first argument, a `string`.
+The function gets the required path as an argument.
 
-    var mockStyles = (req) => 'style.css' === req;
-    prunk.mock( mockStyles, 'no css, dude.');
+```javascript
+var mockStyles = req => 'style.css' === req;
+prunk.mock( mockStyles, 'no css, dude.');
+```
 
 `test` can also be a `RegExp` that is matched agains the name
 of the import or a string. It can be anything else, too, if your
 imports are gone totally crazy.
 
-    prunk.mock( 'style.css', 'no css, dude.' );
-    prunk.mock( /\.(css|scss|sass|less)/, 'no styles, dude.');
+```javascript
+prunk.mock( 'style.css', 'no css, dude.' );
+prunk.mock( /\.(css|scss|sass|less)/, 'no styles, dude.');
+```
 
 This function returns the prunk object so that you can chain calls.
 
-    prunk.mock( ... )
-         .mock( ... )
-         .mock( ... );
+```javascript
+prunk.mock( ... )
+     .mock( ... )
+     .mock( ... );
+```
 
 ### prunk.unmock(test)
 
@@ -102,23 +114,26 @@ This function returns the prunk object so that you can chain calls.
 
 ### prunk.suppress(test)
 
-Suppresses all imports that matches the given `test`.
+Suppresses all imports that match the given `test`.
 `test` can be a **function** that is used to compare
 whatever is required and returns `true` or `false`.
 If the return value is truthy the import will be suppressed
 and thus returns `undefined`.
 
-The function's arguments are the same as with `Module._load`.
-Most of the time you will look at the first argument, a `string`.
+The function gets the required path as an argument.
 
-    var mockStyles = (req) => 'style.css' === req;
-    prunk.mock( mockStyles, 'no css, dude.');
+```javascript
+var mockStyles = (req) => 'style.css' === req;
+prunk.mock( mockStyles, 'no css, dude.');
+```
 
-`test` can also be a `RegExp` that is matched agains the name
+`test` can also be a `RegExp` that is matched against the name
 of the import or a string or something else.
 
-    prunk.mock( 'style.css', 'no css, dude.' );
-    prunk.mock( /\.(css|scss|sass|less)/, 'no styles, dude.');
+```javascript
+prunk.mock( 'style.css', 'no css, dude.' );
+prunk.mock( /\.(css|scss|sass|less)/, 'no styles, dude.');
+```
 
 This function returns the prunk object so that you can chain calls.
 
@@ -132,6 +147,63 @@ This function returns the prunk object so that you can chain calls.
 ### prunk.unsuppressAll()
 
 Removes all suppressed imports.
+This function returns the prunk object so that you can chain calls.
+
+### prunk.alias(test, alias)
+
+This function provides a simple way to alias paths when required. As the
+other functions, it takes a test that can either be a string, a regular
+expression or predicate function. Some special rules apply here, though.
+
+If you pass a **string** as the first argument the required path will
+match if it begins or equals your string. The `alias` parameter is meant
+to be a string, too and simple string manipulation will be performed.
+It will only replace the first occurrence of the search pattern.
+
+```javascript
+prunk.alias('foo', 'bar');
+require('foo'); // aliased to require('bar')
+require('foo/foofoo'); // aliased to require('bar/foofoo');
+```
+
+It is also possible to provide a **regular expression**. It has to contain a grouping
+expression `( )` so that the replacement of the tested value works. `prunk.alias` will
+**throw an error** if the regex does not contain a group.
+
+```javascript
+prunk.alias(/^(foo)/, 'bar');
+require('foo'); // aliased to require('bar')
+require('foo/foofoo'); // aliased to require('bar/foofoo');
+```
+
+Both, string and regexes also accept a **function** as the second argument. This function
+gets the required path and is supposed to return a path which is then required.
+
+```javascript
+prunk.alias('foo', path => `my-foo-dir/${path}` );
+require('foo'); // aliased to require('my-foo-dir/foo')
+require('foo/foofoo'); // aliased to require('my-foo-dir/foo/foofoo');
+```
+
+The third possibility is to provide a predicate **function as test**. Since prunk cannot know
+how to alias a path matched with a predicate you have to provide a function as second argument, too.
+`prunk.alias` will throw if you don't.
+
+```javascript
+prunk.alias( path => path.startsWith('bar'), 'test' );  // will throw!
+
+prunk.alias( path => path.startsWith('foo'), () => 'bar' );
+require('foo'); // aliased to require('bar')
+```
+
+### prunk.unalias(test)
+
+Removes the alias for the given test.
+This function returns the prunk object so that you can chain calls.
+
+### prunk.unaliasAll()
+
+Removes all aliases.
 This function returns the prunk object so that you can chain calls.
 
 ## Documentation
