@@ -470,3 +470,91 @@ describe('alias()', function() {
     });
 
 });
+
+describe('unalias', function() {
+
+    beforeEach(function() {
+        // Reset the require cache
+        require.cache = {};
+        prunk = require('..');
+        prunk._cache = [];
+    });
+
+    it('should take one argument', function() {
+        expect(prunk.unalias.length).to.equal(1);
+    });
+
+    it('should unalias correctly when using a string', function() {
+        prunk.alias('./a', './b');
+        prunk.unalias('./a');
+
+        var imp = require('./a');
+        expect( imp ).to.equal('a');
+    });
+
+    it('should unalias correctly when unsing a regex', function() {
+        prunk.alias(/^(a)/, 'b');
+        prunk.unalias(/^(a)/);
+
+        var imp = require('./a');
+        expect( imp ).to.equal('a');
+    });
+
+    it('should unalias correctly using callbacks', function() {
+        var matcher = function(path) { return null !== path.match(/^a/); };
+        prunk.alias(matcher, matcher);
+        prunk.unalias( matcher );
+
+        var imp = require('./a');
+        expect( imp ).to.equal('a');
+    });
+
+    it('should return the prunk object again', function() {
+        expect( prunk.unalias() ).to.equal( prunk );
+    });
+
+});
+
+// unaliasAll function
+describe('unaliasAll()', function() {
+
+    beforeEach(function() {
+        // Reset the require cache
+        require.cache = {};
+        prunk = require('..');
+        prunk._cache = [];
+    });
+
+    it('should take no arguments', function() {
+        expect(prunk.unaliasAll.length).to.equal(0);
+    });
+
+    it('should unaliasAll correctly when using a string', function() {
+        prunk.alias('./a', './b');
+        prunk.unaliasAll();
+
+        var imp = require('./a');
+        expect( imp ).to.equal('a');
+    });
+
+    it('should unaliasAll correctly when unsing a regex', function() {
+        prunk.alias(/^(a)/, 'b');
+        prunk.unaliasAll();
+
+        var imp = require('./a');
+        expect( imp ).to.equal('a');
+    });
+
+    it('should unaliasAll correctly using callbacks', function() {
+        var matcher = function(path) { return null !== path.match(/^a/); };
+        prunk.alias(matcher, matcher);
+        prunk.unaliasAll();
+
+        var imp = require('./a');
+        expect( imp ).to.equal('a');
+    });
+
+    it('should return the prunk object again', function() {
+        expect( prunk.unaliasAll() ).to.equal( prunk );
+    });
+});
