@@ -1,7 +1,7 @@
 # prunk
 
 prunk is a mocking utility for node.js `require()`. It allows you to
-mock or suppress imports based on their name, regular expressions or
+mock, suppress or alias imports based on their name, regular expressions or
 custom test functions.
 
 [![Build Status](https://travis-ci.org/dak0rn/prunk.svg?branch=master)](https://travis-ci.org/dak0rn/prunk)
@@ -17,52 +17,71 @@ you to import non-JavaScript resources (e.g. templates or stylesheets) in your c
 
 Given you have a React component you want to test. This component imports a
 SCSS files so that the import in node would fail.
-At this point, you either can introduce a pre-compiler, loader or whatever
-your test framework supports or you can simply mock the import.
 
-```jsx
+```javascript
 // MyComp.js
 import { Component } from 'react';
-import 'style.scss';
+import './style.scss';
 
 export default class Mycomp extends Component {
     // ...
 }
 ```
 
+At this point, you either can introduce a pre-compiler, a loader or whatever
+your test framework supports or you can simply make sure the stylesheet does not get imported.
+
 ```javascript
 // MyComp.spec.js
 const prunk = require('prunk');
 
-prunk.mock('style.scss', 'no scss, dude.');
+prunk.mock('./style.scss', 'no scss, dude.');
 // or
-prunk.mock( function(req) { return 'style.scss' === req; }, 'no scss, dude');
-// or better
+prunk.mock( req => './style.scss' === req, 'no scss, dude');
+// or
 prunk.mock( /\.(css|scss|sass)$/, 'no styles, dude');
 
 const MyComp = require('./MyComp');
 ```
 
-In the test, `require()` is used instead of `import` because some pre-compilers
+---
+
+**Note:**
+
+In this example, `require()` is used instead of `import` because some pre-compilers
 move all imports to the top of the file and that would make the mocking impossible.
 If you use mocha you can leverage it's [compiler](https://mochajs.org/#usage) configuration for that.
 (You might also check out [this](https://65535th.com/testing-react-components/) post with an example).
 
+---
+
 The example above uses `.mock()` to replace the required module contents.
-If you just want to make sure some things don't get imported in the first place you can suppress them.
-Then, they will always return `undefined`;
+If you just want to make sure some things don't get imported at all you can suppress them.
+Then, they will always return `undefined`.
 
 ```javascript
 // MyComp.spec.js
 const prunk = require('prunk');
 
-prunk.suppress('style.scss');
+prunk.suppress('./style.scss');
 // or
-prunk.suppress( function(req) { return 'style.scss' === req; } );
-// or better
+prunk.suppress( req => './style.scss' === req );
+// or
 prunk.suppress( /\.(css|scss|sass)$/ );
 
 const MyComp = require('./MyComp');
+```
+
+Maybe mocking an import is more than just a one-liner. You can then alias it to another file.
+
+```javascript
+const prunk = require('prunk');
+
+prunk.alias('./style.scss', './style.js');
+// or
+prunk.alias(/style\.(scss)$/, 'js') // Replaces the first group
+// or
+prunk.alias( what => './style.scss' === what, () => './style.js' );
 ```
 
 ## API
