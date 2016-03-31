@@ -129,6 +129,7 @@ This function returns the prunk object so that you can chain calls.
 ### prunk.unmockAll()
 
 Removes all mocks.
+
 This function returns the prunk object so that you can chain calls.
 
 ### prunk.suppress(test)
@@ -161,11 +162,13 @@ This function returns the prunk object so that you can chain calls.
 Removes the mock registered for the given `test`.
 `unsuppress()` uses strict equal to compare the suppressed
 imports.
+
 This function returns the prunk object so that you can chain calls.
 
 ### prunk.unsuppressAll()
 
 Removes all suppressed imports.
+
 This function returns the prunk object so that you can chain calls.
 
 ### prunk.alias(test, alias)
@@ -218,13 +221,15 @@ require('foo'); // aliased to require('bar')
 ### prunk.unalias(test)
 
 Removes the alias for the given test.
+
 This function returns the prunk object so that you can chain calls.
 
 ### prunk.unaliasAll()
 
 Removes all aliases.
+
 This function returns the prunk object so that you can chain calls.
 
-## Documentation
+## More ocumentation
 
 [Documented source](https://dak0rn.github.io/prunk/).
