@@ -24,7 +24,7 @@
               <h1 id="prunk">prunk</h1>
 <h2 id="a-mocking-utility-for-node-js-require">A mocking utility for node.js require</h2>
 <pre><code>Author: Daniel Koch
-Version: <span class="hljs-number">1.2</span><span class="hljs-number">.1</span>
+Version: <span class="hljs-number">1.3</span><span class="hljs-number">.0</span>
 
 Copyright <span class="hljs-number">2016</span> Daniel Koch
 
@@ -719,9 +719,7 @@ It returns the prunk object so that you can chain calls.</p>
             <div class="content"><div class='highlight'><pre>    unaliasAll: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
         removeAll(<span class="hljs-string">'alias'</span>);
         <span class="hljs-keyword">return</span> prunk;
-    }
-
-};</pre></div></div>
+    },</pre></div></div>
             
         </li>
         
@@ -731,6 +729,28 @@ It returns the prunk object so that you can chain calls.</p>
               
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-37">&#182;</a>
+              </div>
+              <h3 id="teardown">teardown</h3>
+<p>Removes all aliases as well as all mocked and suppressed imports</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    teardown: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+        <span class="hljs-keyword">this</span>.unaliasAll();
+        <span class="hljs-keyword">this</span>.unsuppressAll();
+        <span class="hljs-keyword">this</span>.unmockAll();
+    }
+
+};</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-38">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-38">&#182;</a>
               </div>
               <h2 id="exports">Exports</h2>
 
