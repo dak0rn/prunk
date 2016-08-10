@@ -2,7 +2,13 @@
  * Tests for prunk
  *
  */
-var expect = require('chai').expect;
+var chai = require('chai');
+var expect = chai.expect;
+var spies = require('chai-spies');
+
+// Register the plugin
+chai.use(spies);
+
 var prunk;
 
 // Export
@@ -50,6 +56,10 @@ describe('Export', function() {
 
     it('should have a unaliasAll() function', function() {
        expect( prunk.unaliasAll ).to.be.a('function');
+    });
+
+    it('should have a teardown() function', function() {
+       expect( prunk.teardown ).to.be.a('function');
     });
 
 });
@@ -575,4 +585,49 @@ describe('unaliasAll()', function() {
     it('should return the prunk object again', function() {
         expect( prunk.unaliasAll() ).to.equal( prunk );
     });
+});
+
+// teardown()
+describe('teardown()', function() {
+
+    var originalFn;
+
+    beforeEach(function() {
+        prunk = require('..');
+    });
+
+    it('should take no arguments', function() {
+        expect(prunk.teardown.length).to.equal(0);
+    });
+
+    it('invokes the unmockAll() function', function() {
+        var spy = chai.spy();
+
+        prunk.unmockAll = spy;
+
+        prunk.teardown();
+
+        expect( spy ).to.be.called;
+    });
+
+    it('invokes the unsuppressAll() function', function() {
+        var spy = chai.spy();
+
+        prunk.unsuppressAll = spy;
+
+        prunk.teardown();
+
+        expect( spy ).to.be.called;
+    });
+
+    it('invokes the unaliasAll() function', function() {
+        var spy = chai.spy();
+
+        prunk.unaliasAll = spy;
+
+        prunk.teardown();
+
+        expect( spy ).to.be.called;
+    });
+
 });

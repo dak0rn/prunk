@@ -3,7 +3,7 @@
 // ## A mocking utility for node.js require
 //
 //     Author: Daniel Koch
-//     Version: 1.2.1
+//     Version: 1.3.0
 //
 //     Copyright 2016 Daniel Koch
 //
@@ -277,6 +277,14 @@ var prunk = {
     unaliasAll: function() {
         removeAll('alias');
         return prunk;
+    },
+
+    // ### teardown
+    // Removes all aliases as well as all mocked and suppressed imports
+    teardown: function() {
+        this.unaliasAll();
+        this.unsuppressAll();
+        this.unmockAll();
     }
 
 };

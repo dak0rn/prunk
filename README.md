@@ -230,6 +230,16 @@ Removes all aliases.
 
 This function returns the prunk object so that you can chain calls.
 
-## More ocumentation
+### prunk.teardown()
+
+Removes all aliases and suppressed/mocked imports. Shorthand for
+
+```js
+prunk.unmockAll();
+prunk.unsuppressAll();
+prunk.unaliasAll();
+```
+
+## More documentation
 
 [Documented source](https://dak0rn.github.io/prunk/).
