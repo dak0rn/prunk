@@ -277,6 +277,14 @@ var prunk = {
     unaliasAll: function() {
         removeAll('alias');
         return prunk;
+    },
+
+    // ### teardown
+    // Removes all aliases as well as all mocked and suppressed imports
+    teardown: function() {
+        this.unaliasAll();
+        this.unsuppressAll();
+        this.unmockAll();
     }
 
 };
