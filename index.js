@@ -3,7 +3,7 @@
 // ## A mocking utility for node.js require
 //
 //     Author: Daniel Koch
-//     Version: 1.3.0
+//     Version: 1.3.1
 //
 //     Copyright 2016 Daniel Koch
 //
