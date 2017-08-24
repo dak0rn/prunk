@@ -24,7 +24,7 @@
               <h1 id="prunk">prunk</h1>
 <h2 id="a-mocking-utility-for-node-js-require">A mocking utility for node.js require</h2>
 <pre><code>Author: Daniel Koch
-Version: <span class="hljs-number">1.3</span><span class="hljs-number">.0</span>
+Version: <span class="hljs-number">1.3</span><span class="hljs-number">.1</span>
 
 Copyright <span class="hljs-number">2016</span> Daniel Koch
 
@@ -362,9 +362,9 @@ value and use the given type.</p>
             </div>
             
             <div class="content"><div class='highlight'><pre>    cache.unshift({
-        test: test,
-        value: value,
-        _type: type
+        <span class="hljs-attr">test</span>: test,
+        <span class="hljs-attr">value</span>: value,
+        <span class="hljs-attr">_type</span>: type
     })
 };</pre></div></div>
             
@@ -519,7 +519,7 @@ If the return value is truthy the import will be
 mocked with the given value.</p>
 <p>The function’s arguments are the same as with <code>Module._load</code>.
 Most of the time you will look at the first argument, a <code>string</code>.</p>
-<pre><code><span class="hljs-keyword">var</span> mockStyles = (req) =&gt; <span class="hljs-string">'style.css'</span> === req;
+<pre><code><span class="hljs-keyword">var</span> mockStyles = <span class="hljs-function">(<span class="hljs-params">req</span>) =&gt;</span> <span class="hljs-string">'style.css'</span> === req;
 prunk.mock( mockStyles, <span class="hljs-string">'no css, dude.'</span>);
 </code></pre><p><code>test</code> can also be a <code>RegExp</code> that is matched agains the name
 of the import or a string. It can be anything else, too, if your
