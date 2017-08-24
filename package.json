@@ -27,9 +27,9 @@
   },
   "homepage": "https://github.com/dak0rn/prunk#readme",
   "devDependencies": {
-    "chai": "^3.4.1",
+    "chai": "^4.1.1",
     "chai-spies": "^0.7.1",
     "docco": "^0.7.0",
-    "mocha": "^2.3.4"
+    "mocha": "^3.5.0"
   }
 }
